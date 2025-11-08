@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: flow
+vaadin:
+  launch-browser: true

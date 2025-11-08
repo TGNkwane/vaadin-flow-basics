@@ -1,0 +1,427 @@
+perfect — that’s the *ideal* structure for your teaching demo 👏
+
+you’ll first build and explain each mini-app (basics, forms, grids, dialogs, BCE, etc.) as **separate self-contained routes**,
+then **end the session** by adding a **shell layout** that *brings them all together* inside one cohesive “playground” navigation app —
+so attendees see how everything ties into a real Vaadin application structure.
+
+below is the **final single markdown file** (complete presentation + code + flow) that ends with the **shell layout integration** as the grand finale.
+
+---
+
+```markdown
+# 🧭 Vaadin Guild Session — From Zero to BCE Architecture (Java 25 Edition)
+
+**Duration:** ≈ 90 minutes  
+**Audience:** Intermediate Java / Spring Boot developers  
+**Goal:** Learn Vaadin step-by-step — from basic components and routing, through data binding and dialogs, to a maintainable **BCE-style** mini-application — then wrap up by embedding everything inside a unified **application shell layout**.
+
+---
+
+## 🎯 Learning Outcomes
+Participants will:
+- Understand Vaadin’s **server-side rendering** model  
+- Use core **Flow components**: layouts, forms, grids, dialogs  
+- Apply **validation** and **data binding**  
+- Structure a UI using the **Boundary-Control-Entity** pattern  
+- Compose multiple pages under a single **AppLayout shell**
+
+---
+
+## 🧱 Tech Stack
+
+| Tool | Version | Role |
+|------|----------|------|
+| **Java** | 25 | language & records |
+| **Spring Boot** | 3.3 | bootstrapping & DI |
+| **Vaadin Flow** | 24 LTS | UI framework |
+| **Maven** | 3.9 + | build tool |
+| **H2 / in-memory collections** | — | demo data |
+| **Fly.io / Docker** | — | optional deployment |
+
+---
+
+## 🗂️ Project Structure
+
+```
+
+vaadin-guild-demo/
+├─ pom.xml
+├─ VAADIN_GUILD_SESSION.md
+└─ src/main/java/com/example/vaadinguild/
+├─ VaadinGuildApp.java
+├─ basic/      → App 1 – Hello Vaadin
+├─ layouts/    → App 2 – Routing & Layouts
+├─ forms/      → App 3 – Forms & Validation
+├─ grid/       → App 4 – Data Grid
+├─ dialog/     → App 5 – Dialogs & Notifications
+├─ todo/       → App 6 – BCE Demo (To-Do)
+└─ shell/      → App 7 – Unified App Layout (Playground Shell)
+frontend/themes/guild/
+└─ styles.css
+
+````
+
+---
+
+## 🕒 90-Minute Agenda
+
+| Time | Section | Focus |
+|------|----------|-------|
+| 00 – 10 | Intro + Hello Vaadin | Vaadin concepts & first component |
+| 10 – 25 | Components & Events | TextField + Button + Label |
+| 25 – 40 | Routing & Layouts | @Route and navigation |
+| 40 – 55 | Forms & Validation | Binder and FormLayout |
+| 55 – 70 | Data Grid & CRUD | Grid with mock data |
+| 70 – 80 | Dialogs & Notifications | Dialog & Notification components |
+| 80 – 90 | BCE Demo + App Shell | Tie everything together |
+
+---
+
+## 1️⃣ Project Setup
+
+### `pom.xml`
+```xml
+<properties>
+  <java.version>25</java.version>
+  <vaadin.version>24.4.8</vaadin.version>
+</properties>
+
+<dependencies>
+  <dependency>
+    <groupId>com.vaadin</groupId>
+    <artifactId>vaadin-spring-boot-starter</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-validation</artifactId>
+  </dependency>
+</dependencies>
+````
+
+### `VaadinGuildApp.java`
+
+```java
+@Theme("guild")
+@SpringBootApplication
+public class VaadinGuildApp {
+  public static void main(String[] args) {
+    SpringApplication.run(VaadinGuildApp.class, args);
+  }
+}
+```
+
+Run → `mvn spring-boot:run`
+
+---
+
+## 2️⃣ Hello Vaadin — Basic Components
+
+`basic/HelloView.java`
+
+```java
+@Route("hello")
+public class HelloView extends VerticalLayout {
+  public HelloView() {
+    TextField name = new TextField("Your name");
+    Button greet = new Button("Say Hi");
+    Label message = new Label();
+
+    greet.addClickListener(e ->
+      message.setText("Hello " + name.getValue() + " 👋")
+    );
+
+    add(new H2("Hello Vaadin"), name, greet, message);
+  }
+}
+```
+
+---
+
+## 3️⃣ Routing & Layouts
+
+`layouts/AboutView.java`
+
+```java
+@Route("about")
+public class AboutView extends VerticalLayout {
+  public AboutView() {
+    add(new H3("About Vaadin"),
+        new Paragraph("Server-driven UI rendered as web components."));
+  }
+}
+```
+
+---
+
+## 4️⃣ Forms & Validation
+
+`forms/FormView.java`
+
+```java
+public record Person(String name, String email) {}
+
+@Route("form")
+public class FormView extends FormLayout {
+  public FormView() {
+    TextField name = new TextField("Name");
+    EmailField email = new EmailField("Email");
+    Label status = new Label();
+    Button save = new Button("Save");
+
+    Binder<Person> binder = new Binder<>(Person.class);
+    binder.forField(name).asRequired("Name required").bind(Person::name, null);
+    binder.forField(email).asRequired("Email required").bind(Person::email, null);
+    binder.setBean(new Person("", ""));
+
+    save.addClickListener(e -> {
+      if (binder.validate().isOk())
+        status.setText("✅ Saved " + name.getValue());
+    });
+
+    add(new H2("Form Validation Demo"), name, email, save, status);
+  }
+}
+```
+
+---
+
+## 5️⃣ Data Grid
+
+`grid/GridView.java`
+
+```java
+@Route("grid")
+public class GridView extends VerticalLayout {
+  public GridView() {
+    Grid<Person> grid = new Grid<>(Person.class, false);
+    grid.addColumn(Person::name).setHeader("Name");
+    grid.addColumn(Person::email).setHeader("Email");
+    grid.setItems(List.of(
+      new Person("Tebogo Nkwane","tebogo@errors.co.za"),
+      new Person("Ayanda Zulu","ayanda@example.com")
+    ));
+    add(new H2("Grid Demo"), grid);
+  }
+}
+```
+
+---
+
+## 6️⃣ Dialogs & Notifications
+
+`dialog/DialogView.java`
+
+```java
+@Route("dialog")
+public class DialogView extends VerticalLayout {
+  public DialogView() {
+    Dialog dialog = new Dialog();
+    dialog.add(new H3("Confirm Action"));
+    Button ok = new Button("OK", e -> {
+      Notification.show("Action confirmed ✅");
+      dialog.close();
+    });
+    dialog.add(ok);
+
+    Button open = new Button("Open Dialog", e -> dialog.open());
+    add(new H2("Dialog Demo"), open, dialog);
+  }
+}
+```
+
+---
+
+## 7️⃣ BCE Architecture — To-Do Demo
+
+```
+todo/
+├─ entity/Todo.java
+├─ control/TodoService.java
+└─ boundary/TodoView.java
+```
+
+**Entity**
+
+```java
+public class Todo {
+  private Long id;
+  private String title;
+  private boolean done;
+  // getters & setters
+}
+```
+
+**Control**
+
+```java
+@Service
+public class TodoService {
+  private final List<Todo> todos = new ArrayList<>();
+
+  public List<Todo> findAll() { return todos; }
+  public void add(String title) {
+    Todo t = new Todo();
+    t.setId((long)(todos.size()+1));
+    t.setTitle(title);
+    t.setDone(false);
+    todos.add(t);
+  }
+  public void toggle(Long id) {
+    todos.stream().filter(t -> t.getId().equals(id))
+      .findFirst().ifPresent(t -> t.setDone(!t.isDone()));
+  }
+}
+```
+
+**Boundary**
+
+```java
+@Route("todo")
+public class TodoView extends VerticalLayout {
+  private final TodoService service;
+  private final Grid<Todo> grid = new Grid<>(Todo.class, false);
+
+  public TodoView(TodoService service) {
+    this.service = service;
+    TextField title = new TextField("New task");
+    Button add = new Button("Add", e -> {
+      service.add(title.getValue());
+      title.clear();
+      refresh();
+    });
+
+    grid.addColumn(Todo::getId).setHeader("ID");
+    grid.addColumn(Todo::getTitle).setHeader("Title");
+    grid.addComponentColumn(todo -> {
+      Button toggle = new Button(todo.isDone() ? "Undo" : "Done");
+      toggle.addClickListener(e -> { service.toggle(todo.getId()); refresh(); });
+      return toggle;
+    });
+    grid.setAllRowsVisible(true);
+
+    add(new H2("📝 To-Do Manager (BCE)"), title, add, grid);
+    refresh();
+  }
+
+  private void refresh() { grid.setItems(service.findAll()); }
+}
+```
+
+---
+
+## 8️⃣ Unified App Shell (Playground Layout)
+
+Once all demos work independently, **finish** by creating a single layout that hosts them all.
+
+`shell/MainLayout.java`
+
+```java
+@PageTitle("Vaadin Guild Playground")
+public class MainLayout extends AppLayout {
+
+  public MainLayout() {
+    H1 logo = new H1("Vaadin Guild Playground");
+    logo.getStyle().set("font-size","var(--lumo-font-size-xl)")
+        .set("margin","0 var(--lumo-space-m)");
+
+    VerticalLayout menu = new VerticalLayout(
+      new RouterLink("🏠 Home", HomeView.class),
+      new RouterLink("Hello Vaadin", HelloView.class),
+      new RouterLink("Layouts Demo", AboutView.class),
+      new RouterLink("Forms Demo", FormView.class),
+      new RouterLink("Grid Demo", GridView.class),
+      new RouterLink("Dialog Demo", DialogView.class),
+      new RouterLink("To-Do App (BCE)", TodoView.class)
+    );
+    menu.setPadding(false);
+    menu.setSpacing(false);
+    addToNavbar(logo);
+    addToDrawer(menu);
+  }
+}
+```
+
+`shell/HomeView.java`
+
+```java
+@Route(value="", layout=MainLayout.class)
+public class HomeView extends VerticalLayout {
+  public HomeView() {
+    add(new H2("Welcome to the Vaadin Guild Playground"),
+        new Paragraph("Use the menu to explore each demo page."));
+  }
+}
+```
+
+Now update every existing `@Route` to include the layout:
+
+```java
+@Route(value="hello", layout=MainLayout.class)
+```
+
+This final step gives you a **real application shell** —
+a navigation drawer on the left, shared header, and cohesive UI that ties together all demos.
+
+---
+
+## 🧭 Route Summary
+
+| Path    | Page               |
+| :------ | :----------------- |
+| /       | Home (Shell)       |
+| /hello  | Basic Components   |
+| /about  | Layouts Demo       |
+| /form   | Forms & Validation |
+| /grid   | Data Grid          |
+| /dialog | Dialogs            |
+| /todo   | BCE To-Do App      |
+
+---
+
+## 🚀 Run
+
+```bash
+mvn spring-boot:run
+```
+
+Open [http://localhost:8080](http://localhost:8080) and navigate via the sidebar.
+
+---
+
+## 🧩 Next Steps
+
+* **Persistence:** add Spring Data JPA + H2/Postgres
+* **Realtime:** `@Push` for live updates
+* **Security:** integrate Spring Security
+* **Styling:** custom themes and icons
+* **Deploy:** `fly launch` or Docker container
+
+---
+
+## 📚 References
+
+* [Vaadin Docs](https://vaadin.com/docs/latest)
+* [Vaadin Flow Components](https://vaadin.com/docs/latest/components)
+* [BCE Architecture Guide](https://vaadin.com/learn/tutorials/architecture-bce)
+* [Spring Boot + Vaadin Starter](https://start.vaadin.com)
+
+---
+
+### ✅ End Result
+
+Participants will:
+
+* Understand Vaadin architecture and core concepts
+* Build multiple interactive UIs in one project
+* Implement BCE service layering
+* Combine everything inside a shared application shell
+
+> **Deliverable:** a complete Vaadin “playground” app ready for reuse in future training sessions.
+
+```
+
+---
+
+this markdown is presentation-ready — you can open it in a slide view or share it directly on GitHub.  
+it ends with the **shell layout integration** so attendees leave seeing the *full app structure in action*.
+```
