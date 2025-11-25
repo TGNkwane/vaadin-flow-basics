@@ -1,0 +1,38 @@
+/* Vaadin Guild Theme Styles */
+
+:root {
+  --guild-primary-color: #0066cc;
+  --guild-secondary-color: #6c757d;
+}
+
+/* Custom badge styling */
+[theme~="badge"] {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--lumo-space-xs) var(--lumo-space-s);
+  border-radius: var(--lumo-border-radius-m);
+  font-size: var(--lumo-font-size-s);
+  font-weight: 500;
+}
+
+/* RouterLink hover effect */
+vaadin-router-link:hover {
+  background-color: var(--lumo-primary-color-10pct);
+}
+
+/* Form spacing improvements */
+vaadin-form-layout {
+  max-width: 100%;
+}
+
+/* Grid header styling */
+vaadin-grid::part(header-cell) {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: var(--lumo-font-size-s);
+}
+
+/* Dialog responsive width */
+vaadin-dialog-overlay {
+  max-width: 90vw;
+}
