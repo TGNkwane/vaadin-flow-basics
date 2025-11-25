@@ -62,7 +62,7 @@ public class DialogView extends VerticalLayout {
     errorBtn.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
     var warningBtn = new Button("Warning", e -> showNotification("Warning message", NotificationVariant.LUMO_WARNING));
-    warningBtn.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+    warningBtn.addThemeVariants(ButtonVariant.LUMO_WARNING);
 
     section.add(successBtn, errorBtn, warningBtn);
     return section;
@@ -94,7 +94,7 @@ public class DialogView extends VerticalLayout {
       showNotification("✅ Action confirmed!", NotificationVariant.LUMO_SUCCESS);
       dialog.close();
     });
-    confirmBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
+    confirmBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
 
     var footer = new HorizontalLayout(cancelBtn, confirmBtn);
     footer.setJustifyContentMode(FlexComponent.JustifyContentMode.END);

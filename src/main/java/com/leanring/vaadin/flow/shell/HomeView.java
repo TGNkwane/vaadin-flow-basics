@@ -41,7 +41,7 @@ public class HomeView extends VerticalLayout {
       new UnorderedList(
         new ListItem("Java 25 - Latest features including records and pattern matching"),
         new ListItem("Vaadin Flow 24 LTS - Server-side UI framework"),
-        new ListItem("Spring Boot 3.3+ - Application framework"),
+        new ListItem("Spring Boot 3.5+ - Application framework"),
         new ListItem("Maven - Build and dependency management")
       ),
       new Hr(),
