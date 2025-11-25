@@ -16,21 +16,29 @@ import com.leanring.vaadin.flow.shell.MainLayout;
 @PageTitle("Hello | Vaadin Guild")
 public class HelloView extends VerticalLayout {
 
-  /// Constructor initializes the greeting demo UI with interactive components
+  private final TextField nameField = new TextField("Your name");
+  private final Button greetButton = new Button("Say Hi");
+  private final Span messageSpan = new Span(); // usually an inline element
+
+  /// Constructor initializes the greeting demo UI
   public HelloView() {
-    TextField nameField = new TextField("Your name");
+    configureComponents();
+    configureEventHandlers();
+    buildLayout();
+  }
+
+  /// Configures component properties and styling
+  private void configureComponents() {
     nameField.setPlaceholder("Enter your name...");
     nameField.setWidth("300px");
 
-    Button greetButton = new Button("Say Hi");
     greetButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-    Span messageSpan = new Span();
-    messageSpan.getStyle()
-      .set("font-size", "1.5em")
-      .set("color", "var(--lumo-primary-color)");
+    messageSpan.addClassName("greeting-message");
+  }
 
-    // Handle button click to display personalized greeting
+  /// Sets up event handlers for user interactions
+  private void configureEventHandlers() {
     greetButton.addClickListener(e -> {
       var name = nameField.getValue();
       messageSpan.setText(name.isBlank() ? "👋 Hello there!" : "Hello %s 👋".formatted(name));
@@ -42,7 +50,10 @@ public class HelloView extends VerticalLayout {
         greetButton.click();
       }
     });
+  }
 
+  /// Builds and adds components to the layout
+  private void buildLayout() {
     add(new H2("Hello Vaadin"), nameField, greetButton, messageSpan);
     setPadding(true);
     setSpacing(true);

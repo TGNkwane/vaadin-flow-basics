@@ -5,7 +5,7 @@ import com.leanring.vaadin.flow.services.catalog.boundary.ProductView;
 import com.leanring.vaadin.flow.dialog.DialogView;
 import com.leanring.vaadin.flow.forms.FormView;
 import com.leanring.vaadin.flow.grid.GridView;
-import com.leanring.vaadin.flow.layouts.AboutView;
+import com.leanring.vaadin.flow.layouts.LayoutsView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.H1;
@@ -34,16 +34,17 @@ public class MainLayout extends AppLayout {
     var logo = new H1("🚀 Vaadin Guild Playground");
     logo.addClassNames(
       LumoUtility.FontSize.LARGE,
-      LumoUtility.Margin.NONE
+      LumoUtility.Margin.NONE,
+      "app-logo"
     );
-    logo.getStyle().set("font-size", "var(--lumo-font-size-xl)");
 
     var header = new HorizontalLayout(toggle, logo);
     header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
     header.setWidthFull();
     header.addClassNames(
       LumoUtility.Padding.Vertical.NONE,
-      LumoUtility.Padding.Horizontal.MEDIUM
+      LumoUtility.Padding.Horizontal.MEDIUM,
+      "app-header"
     );
 
     addToNavbar(header);
@@ -55,11 +56,11 @@ public class MainLayout extends AppLayout {
       createNavLink("🏠 Home", HomeView.class),
       createSectionHeader("Basic Demos"),
       createNavLink("👋 Hello Vaadin", HelloView.class),
-      createNavLink("📝 Layouts Demo", AboutView.class),
+      createNavLink("💬 Dialog Demo", DialogView.class),
+      createNavLink("📝 Layouts Demo", LayoutsView.class),
       createNavLink("📋 Forms Demo", FormView.class),
       createNavLink("📋 Grid Demo", GridView.class),
-      createNavLink("💬 Dialog Demo", DialogView.class),
-      createSectionHeader("Advanced"),
+      createSectionHeader("Intermediate"),
       createNavLink("🛒 Product Catalog (BCE)", ProductView.class)
     );
 
@@ -79,12 +80,9 @@ public class MainLayout extends AppLayout {
     link.addClassNames(
       LumoUtility.Display.BLOCK,
       LumoUtility.Padding.SMALL,
-      LumoUtility.TextColor.BODY
+      LumoUtility.TextColor.BODY,
+      "nav-link"
     );
-    link.getStyle()
-      .set("text-decoration", "none")
-      .set("border-radius", "var(--lumo-border-radius-m)")
-      .set("margin", "0 var(--lumo-space-s)");
 
     return link;
   }

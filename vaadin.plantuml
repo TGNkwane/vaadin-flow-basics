@@ -1,0 +1,30 @@
+@startuml
+actor User
+participant Browser
+participant "Vaadin Client Engine" as VCE
+participant "Spring Boot Application" as SBA
+participant "Vaadin Flow Server" as VFS
+participant "Service Layer" as SL
+participant "Database"
+
+User -> Browser : HTTP GET /
+Browser -> VCE : Load Bootstrap + UI JSON
+VCE -> VFS : Establish connection
+
+== Navigation / Event Flow ==
+User -> Browser : Click Button
+Browser -> VCE : Event triggered
+VCE -> VFS : Send event as JSON
+VFS -> SBA : Map to Java Component
+VFS -> SL : Execute Business Logic
+SL -> Database : Query/Update
+Database --> SL : Response
+SL --> VFS : Return data/state
+VFS -> VCE : Return UI Patch JSON
+VCE -> Browser : DOM Update
+
+== Optional Server Push ==
+SBA -> VFS : Push update
+VFS -> VCE : Send async patch
+VCE -> Browser : Apply changes
+@enduml

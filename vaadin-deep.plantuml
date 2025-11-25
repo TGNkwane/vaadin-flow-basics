@@ -1,0 +1,49 @@
+@startuml
+' ===== System Architecture Overview =====
+actor User
+participant Browser
+participant "Vaadin Client Engine" as VCE
+participant "Vaadin Flow Server" as VFS
+participant "Spring Boot App" as SBA
+participant "Service Layer" as SL
+participant "Database"
+
+User -> Browser : Access URL
+Browser -> VCE : Bootstrap request
+VCE -> VFS : Connect to Vaadin Flow
+VFS -> SBA : Route resolution / UI instantiation
+SBA -> SL : Fetch domain data
+SL -> Database : Read/Write
+Database --> SL
+SL --> SBA
+SBA --> VFS
+VFS -> VCE : Return UI state JSON
+VCE -> Browser : Render DOM
+
+' ===== Client Event to Server Action =====
+User -> Browser : User clicks component
+Browser -> VCE : Event detected
+VCE -> VFS : Send serialized event JSON
+VFS -> SBA : Find Java component
+SBA -> SL : Business logic execution
+SL -> Database : Optional DB I/O
+Database --> SL
+SL --> SBA : Response / state update
+SBA --> VFS
+VFS -> VCE : JSON diff / patch
+VCE -> Browser : DOM update
+
+' ===== Push Interaction (Server-Initiated) =====
+SBA -> VFS : Push update using UI.access()
+VFS -> VCE : WebSocket message
+VCE -> Browser : Apply change to DOM
+
+' ===== Security Flow =====
+User -> Browser : Request secured route
+Browser -> VCE : Send route intent
+VCE -> VFS : Forward route
+VFS -> SBA : Evaluate @RolesAllowed or RouteGuard
+SBA -> VFS : Allow or reroute
+VFS -> VCE : UI decision (render or access denied)
+VCE -> Browser : Render content or deny page
+@enduml

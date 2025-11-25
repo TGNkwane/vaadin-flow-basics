@@ -1,0 +1,96 @@
+@startuml
+' ===== Component Diagram =====
+package "Client" {
+  [Browser]
+  [Vaadin Client Engine] <<framework>>
+}
+
+package "Server" {
+  [Spring Boot Application] <<container>>
+  [Vaadin Flow Engine] <<framework>>
+  [Component Tree] <<UI state>>
+  [Spring Services] <<service>>
+  [JPA Repository] <<data access>>
+  [Database] <<RDBMS>>
+}
+
+[Browser] --> [Vaadin Client Engine] : Load UI, handle events
+[Vaadin Client Engine] --> [Vaadin Flow Engine] : Send user actions
+[Vaadin Flow Engine] --> [Component Tree] : Sync state
+[Vaadin Flow Engine] --> [Spring Boot Application] : Event handling context
+[Spring Boot Application] --> [Spring Services] : Delegate logic
+[Spring Services] --> [JPA Repository] : ORM access
+[JPA Repository] --> [Database] : Query/Save
+
+note right of [Spring Boot Application]
+Spring Boot manages:
+- Dependency Injection (DI)
+- Lifecycle of Beans
+- Auto-configurations
+- REST endpoints (if any)
+- Security context
+- Integration with Flow & Data layers
+end note
+@enduml
+
+@startuml
+' ===== Activity Diagram: User Interaction =====
+start
+:User interacts with browser UI;
+:Client Engine serializes event to JSON;
+:Send to server over XHR/WebSocket;
+:Vaadin Flow decodes and routes event;
+if (Component found?) then (yes)
+  :Execute Java listener code;
+  :Update UI state (Component Tree);
+  :Serialize patch to JSON;
+  :Send to client for DOM update;
+else (no)
+  :Ignore / error log;
+endif
+stop
+@enduml
+
+@startuml
+' ===== Deployment Diagram =====
+node "Browser" {
+  component "Vaadin Client Engine" <<client runtime>>
+  component "Web Components (DOM)" <<UI>>
+}
+
+node "App Server (Spring Boot)" {
+  component "Vaadin Flow Engine" <<UI sync layer>>
+  component "Java Views (UI)"
+  component "Spring Services"
+}
+
+node "DB Server" {
+  database "PostgreSQL / MySQL" as DB
+}
+
+"Vaadin Client Engine" --> "Vaadin Flow Engine" : Event transport / JSON patches
+"Vaadin Flow Engine" --> "Java Views (UI)" : Instantiate & update components
+"Java Views (UI)" --> "Spring Services" : Handle logic / state
+"Spring Services" --> DB : Data operations
+
+note left of "Spring Services"
+Typical DI-managed beans:
+- @Service classes
+- @Transactional logic
+- Security & validations
+end note
+@enduml
+
+@startuml
+' ===== Vaadin Client Engine Deep Dive =====
+object "Vaadin Client Engine" {
+  + Receives UI definition as JSON from server
+  + Builds DOM using Web Components
+  + Listens to browser events (click, change, etc.)
+  + Sends serialized event payloads to server
+  + Applies DOM updates from server patches
+  + Works in single-page application (SPA) mode
+  + Handles navigation via Vaadin Router (client-side)
+  + Optional WebSocket channel for server push
+}
+@enduml

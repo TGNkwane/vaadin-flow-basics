@@ -56,18 +56,16 @@ public class ProductView extends VerticalLayout {
   /// @return HorizontalLayout with header content
   private HorizontalLayout createHeader() {
     var title = new H2("🛒 Product Catalog (BCE Demo)");
-    title.getStyle().set("margin", "0");
+    title.addClassName("page-title");
 
     var stats = new Span("Total Products: " + service.findAll().size());
-    stats.getStyle()
-      .set("color", "var(--lumo-secondary-text-color)")
-      .set("font-size", "var(--lumo-font-size-s)");
+    stats.addClassName("stats-text");
 
     var header = new HorizontalLayout(title, stats);
     header.setWidthFull();
     header.setAlignItems(FlexComponent.Alignment.BASELINE);
     header.setPadding(true);
-    header.getStyle().set("background", "var(--lumo-contrast-5pct)");
+    header.addClassName("header-bar");
 
     return header;
   }
@@ -132,11 +130,11 @@ public class ProductView extends VerticalLayout {
       var badge = new Span(product.getStockStatus());
       badge.getElement().getThemeList().add("badge");
       if (product.stock() == 0) {
-        badge.getStyle().set("color", "var(--lumo-error-color)");
+        badge.addClassName("stock-out");
       } else if (product.stock() < 10) {
-        badge.getStyle().set("color", "var(--lumo-warning-color)");
+        badge.addClassName("stock-low");
       } else {
-        badge.getStyle().set("color", "var(--lumo-success-color)");
+        badge.addClassName("stock-ok");
       }
       return badge;
     }))

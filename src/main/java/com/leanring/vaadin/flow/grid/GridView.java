@@ -7,6 +7,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.leanring.vaadin.flow.shell.MainLayout;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 /// @see Grid
 /// @see ListDataProvider
 @Route(value = "grid", layout = MainLayout.class)
+@PageTitle("Grid | Vaadin Guild")
 public class GridView extends VerticalLayout {
 
   private final Grid<Person> grid = new Grid<>(Person.class, false);
@@ -24,19 +26,27 @@ public class GridView extends VerticalLayout {
 
   /// Constructor initializes grid with sample data and filtering
   public GridView() {
-    // Sample data using Java 25 text blocks and records
-    var people = List.of(
+    dataProvider = new ListDataProvider<>(createSampleData());
+    configureGrid();
+    buildLayout();
+  }
+
+  /// Creates sample person data for the grid
+  /// @return List of sample Person records
+  private List<Person> createSampleData() {
+    return List.of(
       new Person("Tebogo Nkwane", "tebogo@example.co.za", "+27123456789"),
       new Person("Ayanda Zulu", "ayanda@example.com", "+27987654321"),
       new Person("Sipho Mthembu", "sipho@example.co.za", "+27555123456"),
       new Person("Nomvula Dlamini", "nomvula@example.co.za", "+27444987654"),
       new Person("Thabo Mokoena", "thabo@example.com", "+27333678901")
     );
+  }
 
-    dataProvider = new ListDataProvider<>(people);
+  /// Configures grid columns and data provider
+  private void configureGrid() {
     grid.setDataProvider(dataProvider);
 
-    // Configure grid columns
     grid.addColumn(Person::name)
       .setHeader("Name")
       .setSortable(true)
@@ -52,16 +62,15 @@ public class GridView extends VerticalLayout {
       .setAutoWidth(true);
 
     grid.setHeight("400px");
+  }
 
-    // Add filter field
-    var filterField = createFilterField();
-
+  /// Builds and configures the layout
+  private void buildLayout() {
     add(
       new H2("Grid Demo"),
-      filterField,
+      createFilterField(),
       grid
     );
-
     setPadding(true);
     setMaxWidth("1000px");
   }

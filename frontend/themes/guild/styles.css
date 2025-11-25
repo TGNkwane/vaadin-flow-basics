@@ -36,3 +36,87 @@ vaadin-grid::part(header-cell) {
 vaadin-dialog-overlay {
   max-width: 90vw;
 }
+
+/* ===========================================
+   Custom Component Classes
+   =========================================== */
+
+/* Greeting message styling - HelloView */
+.greeting-message {
+  font-size: 1.5em;
+  color: var(--lumo-primary-color);
+}
+
+/* Call to action text - HomeView */
+.call-to-action {
+  color: var(--lumo-primary-color);
+  font-weight: bold;
+}
+
+/* App header logo - MainLayout */
+.app-logo {
+  font-size: var(--lumo-font-size-xl);
+}
+
+/* Navigation link styling - MainLayout */
+.nav-link {
+  text-decoration: none;
+  border-radius: var(--lumo-border-radius-m);
+  margin: 0 var(--lumo-space-s);
+}
+
+/* Page header with no margin - ProductView */
+.page-title {
+  margin: 0;
+}
+
+/* Stats/subtitle text - ProductView */
+.stats-text {
+  color: var(--lumo-secondary-text-color);
+  font-size: var(--lumo-font-size-s);
+}
+
+/* Header bar background - ProductView */
+.header-bar {
+  background: var(--lumo-contrast-5pct);
+}
+
+/* Stock status badges - ProductView */
+.stock-out {
+  color: var(--lumo-error-color);
+}
+
+.stock-low {
+  color: var(--lumo-warning-color);
+}
+
+.stock-ok {
+  color: var(--lumo-success-color);
+}
+
+/* ===========================================
+   Layout Demo Classes
+   =========================================== */
+
+/* Bordered container for layout examples */
+.layout-bordered {
+  border: 1px solid var(--lumo-contrast-20pct);
+}
+
+.layout-dashed {
+  border: 1px dashed var(--lumo-contrast-30pct);
+}
+
+/* Dashboard panel backgrounds */
+.panel-primary {
+  background: var(--lumo-primary-color-10pct);
+}
+
+.panel-success {
+  background: var(--lumo-success-color-10pct);
+}
+
+/* Zero margin utility */
+.no-margin {
+  margin: 0;
+}

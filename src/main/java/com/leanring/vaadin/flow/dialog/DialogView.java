@@ -11,6 +11,8 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.EmailField;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.leanring.vaadin.flow.shell.MainLayout;
@@ -43,7 +45,7 @@ public class DialogView extends VerticalLayout {
     var confirmDialogBtn = new Button("Confirmation Dialog", e -> showConfirmDialog());
     var formDialogBtn = new Button("Form Dialog", e -> showFormDialog());
 
-    section.add(new HorizontalLayout(simpleDialogBtn, confirmDialogBtn, formDialogBtn));
+    section.add(simpleDialogBtn, confirmDialogBtn, formDialogBtn);
     return section;
   }
 
@@ -62,7 +64,7 @@ public class DialogView extends VerticalLayout {
     var warningBtn = new Button("Warning", e -> showNotification("Warning message", NotificationVariant.LUMO_WARNING));
     warningBtn.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
 
-    section.add(new HorizontalLayout(successBtn, errorBtn, warningBtn));
+    section.add(successBtn, errorBtn, warningBtn);
     return section;
   }
 
@@ -108,8 +110,8 @@ public class DialogView extends VerticalLayout {
     dialog.setHeaderTitle("📝 Quick Form");
 
     var layout = new VerticalLayout();
-    var nameField = new com.vaadin.flow.component.textfield.TextField("Name");
-    var emailField = new com.vaadin.flow.component.textfield.EmailField("Email");
+    var nameField = new TextField("Name");
+    var emailField = new EmailField("Email");
 
     layout.add(nameField, emailField);
     dialog.add(layout);

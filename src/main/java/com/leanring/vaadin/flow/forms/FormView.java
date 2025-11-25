@@ -11,7 +11,6 @@ import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.leanring.vaadin.flow.shell.MainLayout;
@@ -32,6 +31,14 @@ public class FormView extends VerticalLayout {
 
   /// Constructor initializes the form with validation and binding
   public FormView() {
+    configureFields();
+    configureBinder();
+    buildLayout();
+    resetForm();
+  }
+
+  /// Configures form field properties
+  private void configureFields() {
     nameField.setPlaceholder("Enter full name");
     nameField.setRequiredIndicatorVisible(true);
 
@@ -39,12 +46,17 @@ public class FormView extends VerticalLayout {
     emailField.setRequiredIndicatorVisible(true);
 
     phoneField.setPlaceholder("+27 XX XXX XXXX");
+  }
 
-    // Bind fields with automatic validation
+  /// Configures binder with field bindings
+  private void configureBinder() {
     binder.forField(nameField).bind("name");
     binder.forField(emailField).bind("email");
     binder.forField(phoneField).bind("phone");
+  }
 
+  /// Builds and configures the layout
+  private void buildLayout() {
     var saveButton = new Button("Save", e -> handleSave());
     saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
@@ -68,7 +80,6 @@ public class FormView extends VerticalLayout {
 
     setPadding(true);
     setMaxWidth("800px");
-    resetForm();
   }
 
   /// Handles form submission with validation

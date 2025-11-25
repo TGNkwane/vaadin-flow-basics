@@ -15,6 +15,7 @@ import com.vaadin.flow.router.Route;
 @PageTitle("Home | Vaadin Guild")
 public class HomeView extends VerticalLayout {
 
+  /// Constructor builds the landing page content
   public HomeView() {
     add(
       new H1("Welcome to Vaadin Guild Playground"),
@@ -33,9 +34,7 @@ public class HomeView extends VerticalLayout {
     section.setPadding(false);
 
     var callToAction = new Paragraph("Use the menu on the left to explore each demo!");
-    callToAction.getStyle()
-      .set("color", "var(--lumo-primary-color)")
-      .set("font-weight", "bold");
+    callToAction.addClassName("call-to-action");
 
     section.add(
       new H2("Tech Stack"),
