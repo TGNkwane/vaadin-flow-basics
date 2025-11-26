@@ -12,16 +12,16 @@ import com.leanring.vaadin.flow.shell.MainLayout;
 
 /// Basic Vaadin view demonstrating core components and event handling.
 /// Showcases TextField, Button with variants, and dynamic content updates.
-@Route(value = "hello", layout = MainLayout.class)
-@PageTitle("Hello | Vaadin Guild")
-public class HelloView extends VerticalLayout {
+@Route(value = "basic", layout = MainLayout.class)
+@PageTitle("Basic Components | Vaadin Guild")
+public class BasicComponentsView extends VerticalLayout {
 
   private final TextField nameField = new TextField("Your name");
   private final Button greetButton = new Button("Say Hi");
   private final Span messageSpan = new Span(); // usually an inline element
 
   /// Constructor initializes the greeting demo UI
-  public HelloView() {
+  public BasicComponentsView() {
     configureComponents();
     configureEventHandlers();
     buildLayout();
@@ -41,7 +41,7 @@ public class HelloView extends VerticalLayout {
   private void configureEventHandlers() {
     greetButton.addClickListener(e -> {
       var name = nameField.getValue();
-      messageSpan.setText(name.isBlank() ? "👋 Hello there!" : "Hello %s 👋".formatted(name));
+      messageSpan.setText((name == null || name.isBlank()) ? "👋 Hello there!" : "Hello %s 👋".formatted(name));
     });
 
     // Allow Enter key to trigger greeting
@@ -54,7 +54,7 @@ public class HelloView extends VerticalLayout {
 
   /// Builds and adds components to the layout
   private void buildLayout() {
-    add(new H2("Hello Vaadin"), nameField, greetButton, messageSpan);
+    add(new H2("Basic Components"), nameField, greetButton, messageSpan);
     setPadding(true);
     setSpacing(true);
   }

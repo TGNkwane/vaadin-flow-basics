@@ -1,6 +1,6 @@
 package com.leanring.vaadin.flow.shell;
 
-import com.leanring.vaadin.flow.basic.HelloView;
+import com.leanring.vaadin.flow.basic.BasicComponentsView;
 import com.leanring.vaadin.flow.services.catalog.boundary.ProductView;
 import com.leanring.vaadin.flow.dialog.DialogView;
 import com.leanring.vaadin.flow.forms.FormView;
@@ -55,7 +55,7 @@ public class MainLayout extends AppLayout {
     var menu = new VerticalLayout(
       createNavLink("🏠 Home", HomeView.class),
       createSectionHeader("Basic Demos"),
-      createNavLink("👋 Hello Vaadin", HelloView.class),
+      createNavLink("👀 Basic Components", BasicComponentsView.class),
       createNavLink("💬 Dialog Demo", DialogView.class),
       createNavLink("📝 Layouts Demo", LayoutsView.class),
       createNavLink("📋 Forms Demo", FormView.class),

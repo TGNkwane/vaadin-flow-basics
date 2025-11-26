@@ -6,11 +6,11 @@ import com.vaadin.flow.component.textfield.TextField;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class HelloViewTest {
+class BasicComponentsViewTest {
 
     @Test
     void shouldInitializeComponents() {
-        HelloView view = new HelloView();
+        BasicComponentsView view = new BasicComponentsView();
 
         TextField nameField = (TextField) view.getChildren()
                 .filter(c -> c instanceof TextField)
@@ -28,7 +28,7 @@ class HelloViewTest {
 
     @Test
     void shouldGreetUser() {
-        HelloView view = new HelloView();
+        BasicComponentsView view = new BasicComponentsView();
 
         TextField nameField = (TextField) view.getChildren()
                 .filter(c -> c instanceof TextField)
@@ -48,6 +48,6 @@ class HelloViewTest {
         nameField.setValue("Vaadin User");
         greetButton.click();
 
-        Assertions.assertEquals("Hello Vaadin User \uD83D\uDC4B", messageSpan.getText());
+        Assertions.assertEquals("Hello Vaadin User 👋", messageSpan.getText());
     }
 }
