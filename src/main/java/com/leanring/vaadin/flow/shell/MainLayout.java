@@ -1,6 +1,7 @@
 package com.leanring.vaadin.flow.shell;
 
 import com.leanring.vaadin.flow.basic.BasicComponentsView;
+import com.leanring.vaadin.flow.js.ThreeDemoView;
 import com.leanring.vaadin.flow.services.catalog.boundary.ProductView;
 import com.leanring.vaadin.flow.dialog.DialogView;
 import com.leanring.vaadin.flow.forms.FormView;
@@ -61,7 +62,8 @@ public class MainLayout extends AppLayout {
       createNavLink("📋 Forms Demo", FormView.class),
       createNavLink("📋 Grid Demo", GridView.class),
       createSectionHeader("Intermediate"),
-      createNavLink("🛒 Product Catalog (BCE)", ProductView.class)
+      createNavLink("🛒 Product Catalog (BCE)", ProductView.class),
+      createNavLink("🧊 Three.js Demo", ThreeDemoView.class)
     );
 
     menu.setSizeFull();

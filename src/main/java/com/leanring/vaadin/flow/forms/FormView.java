@@ -1,118 +1,120 @@
 package com.leanring.vaadin.flow.forms;
 
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Hr;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.EmailField;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
-import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.leanring.vaadin.flow.shell.MainLayout;
 
-/// Form view demonstrating data binding and validation.
-/// Showcases Binder, FormLayout, and validation feedback.
+/// Form view demonstrating reusable form components.
+/// Shows three forms: PersonForm (record), PersonEntityForm (class), ContactForm (simple).
 ///
-/// @see Binder
-/// @see FormLayout
+/// @see PersonForm
+/// @see PersonEntityForm
+/// @see ContactForm
 @Route(value = "form", layout = MainLayout.class)
 @PageTitle("Forms | Vaadin Guild")
 public class FormView extends VerticalLayout {
 
-  private final Binder<Person> binder = new BeanValidationBinder<>(Person.class);
-  private final TextField nameField = new TextField("Name");
-  private final EmailField emailField = new EmailField("Email");
-  private final TextField phoneField = new TextField("Phone");
+  private final PersonForm personForm = new PersonForm();
+  private final PersonEntityForm entityForm = new PersonEntityForm();
+  private final ContactForm contactForm = new ContactForm();
 
-  /// Constructor initializes the form with validation and binding
+  /// Constructor builds the view with all form examples
   public FormView() {
-    configureFields();
-    configureBinder();
+    configureFormHandlers();
     buildLayout();
-    resetForm();
   }
 
-  /// Configures form field properties
-  private void configureFields() {
-    nameField.setPlaceholder("Enter full name");
-    nameField.setRequiredIndicatorVisible(true);
+  /// Configures save/submit handlers for all forms
+  private void configureFormHandlers() {
+    personForm.setSaveHandler(person -> {
+      showNotification(
+        "✅ Record saved: %s (%s)".formatted(person.name(), person.email()),
+        NotificationVariant.LUMO_SUCCESS
+      );
+    });
 
-    emailField.setPlaceholder("user@example.com");
-    emailField.setRequiredIndicatorVisible(true);
+    entityForm.setSaveHandler(entity -> {
+      var addr = entity.getAddress();
+      showNotification(
+        "✅ Entity saved: %s in %s, %s".formatted(
+          entity.getName(),
+          addr.getCity(),
+          addr.getStreet()
+        ),
+        NotificationVariant.LUMO_SUCCESS
+      );
+    });
 
-    phoneField.setPlaceholder("+27 XX XXX XXXX");
+    contactForm.setSubmitHandler((email, message) -> {
+      showNotification(
+        "✅ Message sent from: %s".formatted(email),
+        NotificationVariant.LUMO_SUCCESS
+      );
+    });
   }
 
-  /// Configures binder with field bindings
-  private void configureBinder() {
-    binder.forField(nameField).bind("name");
-    binder.forField(emailField).bind("email");
-    binder.forField(phoneField).bind("phone");
-  }
-
-  /// Builds and configures the layout
+  /// Builds the layout with forms in sections
   private void buildLayout() {
-    var saveButton = new Button("Save", e -> handleSave());
-    saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-    var clearButton = new Button("Clear", e -> resetForm());
-
-    var formLayout = new FormLayout(
-      nameField,
-      emailField,
-      phoneField
-    );
-    formLayout.setResponsiveSteps(
-      new FormLayout.ResponsiveStep("0", 1),
-      new FormLayout.ResponsiveStep("500px", 2)
-    );
-
     add(
-      new H2("Form Validation Demo"),
-      formLayout,
-      new VerticalLayout(saveButton, clearButton)
+      new H2("Form Components Demo"),
+      new Paragraph("Comparing Record vs Class binding, and nested object binding.")
     );
+
+    // Row 1: Record-based form vs Entity-based form
+    var row1 = new HorizontalLayout();
+    row1.setWidthFull();
+    row1.setSpacing(true);
+
+    var personSection = createSection(
+      "PersonForm (Record)",
+      "Uses Person record. Binder reads only, manual object creation on save.",
+      personForm
+    );
+
+    var entitySection = createSection(
+      "PersonEntityForm (Class + Nested)",
+      "Uses PersonEntity class with nested Address. Binder reads AND writes directly.",
+      entityForm
+    );
+
+    row1.add(personSection, entitySection);
+
+    // Row 2: Simple contact form
+    var contactSection = createSection(
+      "ContactForm (Simple)",
+      "Minimal form without Binder - just fields and manual handling.",
+      contactForm
+    );
+    contactSection.setMaxWidth("50%");
+
+    add(new Hr(), row1, new Hr(), contactSection);
 
     setPadding(true);
-    setMaxWidth("800px");
+    setSpacing(true);
   }
 
-  /// Handles form submission with validation
-  private void handleSave() {
-    if (binder.validate().isOk()) {
-      var person = new Person(
-        nameField.getValue(),
-        emailField.getValue(),
-        phoneField.getValue()
-      );
-      showSuccessNotification("✅ Saved: %s (%s)".formatted(person.name(), person.email()));
-      resetForm();
-    } else {
-      showErrorNotification("❌ Please fix validation errors");
-    }
+  /// Creates a section with header, description, and form
+  private VerticalLayout createSection(String title, String description, Component form) {
+    var section = new VerticalLayout();
+    section.setPadding(false);
+    section.add(new H3(title), new Paragraph(description), form);
+    return section;
   }
 
-  /// Resets form fields and clears validation state
-  private void resetForm() {
-      binder.readBean(new Person("", "", ""));
-  }
-
-  /// Shows success notification
-  /// @param message Success message to display
-  private void showSuccessNotification(String message) {
+  /// Shows a notification with the given variant
+  /// @param message Message to display
+  /// @param variant Notification style variant
+  private void showNotification(String message, NotificationVariant variant) {
     var notification = Notification.show(message, 3000, Notification.Position.TOP_CENTER);
-    notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-  }
-
-  /// Shows error notification
-  /// @param message Error message to display
-  private void showErrorNotification(String message) {
-    var notification = Notification.show(message, 3000, Notification.Position.TOP_CENTER);
-    notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+    notification.addThemeVariants(variant);
   }
 }
